@@ -1,0 +1,15 @@
+experiment_id: higher_order_test
+
+data:
+  alphabet: ['<', 'a', 'b','c', '>']
+  order: 3
+  n_sequences: 60
+  max_length: 25
+  evolution_type: linear
+
+em:
+  max_iterations: 10
+  tolerance: 1e-4
+  regularization_lambda: 0.001
+  damping_factor: 0.1 
+  adaptive_damping: true

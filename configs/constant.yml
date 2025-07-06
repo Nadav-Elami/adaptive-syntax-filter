@@ -1,0 +1,15 @@
+experiment_id: constant_evolution
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', '>']
+  order: 1
+  n_sequences: 50
+  max_length: 18
+  evolution_type: constant
+
+em:
+  max_iterations: 25
+  tolerance: 1e-4
+  regularization_lambda: 1e-3
+  damping_factor: 0.8
+  adaptive_damping: true 

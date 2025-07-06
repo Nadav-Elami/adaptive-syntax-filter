@@ -1,0 +1,14 @@
+experiment_id: medium_test
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '>']
+  order: 1
+  n_sequences: 100
+  max_length: 25
+  evolution_type: sigmoid
+
+em:
+  max_iterations: 250
+  tolerance: 1e-4
+  regularization_lambda: 0.001
+  damping_factor: 0.1  

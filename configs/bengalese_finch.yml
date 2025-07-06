@@ -1,0 +1,13 @@
+experiment_id: bengalese_finch_simulation
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', '>']
+  order: 1
+  n_sequences: 300
+  max_length: 30
+  evolution_type: exponential
+
+em:
+  max_iterations: 300
+  tolerance: 1e-4
+  regularization_lambda: 0.001 

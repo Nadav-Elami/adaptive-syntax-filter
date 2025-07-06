@@ -1,0 +1,15 @@
+experiment_id: minimal_demo
+
+data:
+  alphabet: ['<', 'a', 'b', '>']
+  order: 1
+  n_sequences: 100
+  max_length: 1200
+  evolution_type: linear
+
+em:
+  max_iterations: 25
+  tolerance: 1e-4
+  regularization_lambda: 1e-3
+  damping_factor: 0.8
+  adaptive_damping: true 

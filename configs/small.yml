@@ -1,0 +1,15 @@
+experiment_id: small_test
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', 'd', '>']
+  order: 1
+  n_sequences: 200
+  max_length: 15
+  evolution_type: linear
+
+em:
+  max_iterations: 1000
+  tolerance: 1e-4
+  regularization_lambda: 1e-3
+  damping_factor: 0.1 
+  adaptive_damping: true 
