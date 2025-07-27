@@ -210,7 +210,6 @@ This project is licensed under the MIT License - see the [LICENSE](../LICENSE) f
 - [Neural Syntax Lab](https://github.com/NeuralSyntaxLab) at the Weizmann Institute of Science
 - Research collaborators and advisors
 - Open source community
-- Funding agencies (if applicable)
 
 ## 📞 Contact
 

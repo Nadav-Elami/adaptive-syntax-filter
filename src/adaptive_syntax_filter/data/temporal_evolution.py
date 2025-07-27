@@ -153,8 +153,13 @@ def _compute_sequence_evolution(x_init: np.ndarray,
             # Create default intermediate values with non-linear distribution
             # This creates more obvious changes at breakpoints
             n_segments = len(breakpoints) + 1
-            diff = x_final - x_init
-            diff = np.where(np.isfinite(diff), diff, 0.0)
+            
+            # Handle infinite values more carefully to avoid warnings
+            with np.errstate(invalid='ignore'):
+                diff = x_final - x_init
+                # Set NaN and infinite differences to 0 (no evolution for constrained positions)
+                diff = np.where(np.isfinite(diff), diff, 0.0)
+            
             intermediate_values = []
             
             # Create non-uniform intermediate values for more obvious piecewise behavior
@@ -170,7 +175,13 @@ def _compute_sequence_evolution(x_init: np.ndarray,
                 
                 # Ensure weight stays in [0, 1] bounds
                 weight = min(1.0, max(0.0, weight))
-                intermediate_values.append(x_init + weight * diff)
+                
+                # Compute intermediate value safely
+                with np.errstate(invalid='ignore'):
+                    intermediate_value = x_init + weight * diff
+                    # Ensure we don't have NaN values
+                    intermediate_value = np.where(np.isfinite(intermediate_value), intermediate_value, x_init)
+                    intermediate_values.append(intermediate_value)
         
         # Validate intermediate values
         if len(intermediate_values) != len(breakpoints):
@@ -201,21 +212,22 @@ def _compute_sequence_evolution(x_init: np.ndarray,
     elif evolution_type == 'oscillatory':
         # Oscillatory evolution with trend
         frequency = params.get('frequency', 2.0)
-        amplitude = params.get('amplitude', 0.1)
-        trend_weight = params.get('trend_weight', 0.8)
+        amplitude = params.get('amplitude', 0.3)
+        trend_weight = params.get('trend_weight', 0.6)
         
-        # Pre-compute difference, handling infinities
-        with np.errstate(invalid='ignore'):
+        # Pre-compute difference, handling infinities more carefully
+        with np.errstate(invalid='ignore', divide='ignore'):
             diff = x_final - x_init
             diff = np.where(np.isfinite(diff), diff, 0.0)
         
             for i, time_point in enumerate(t):
                 # Base linear trend
-                linear_component = x_init + time_point * diff
-                # Oscillatory component
-                oscillation = amplitude * diff * np.sin(2 * np.pi * frequency * time_point)
-                # Combine with trend dominance
-                trajectory[:, i] = trend_weight * linear_component + (1 - trend_weight) * oscillation
+                with np.errstate(invalid='ignore'):
+                    linear_component = x_init + time_point * diff
+                    # Oscillatory component
+                    oscillation = amplitude * diff * np.sin(2 * np.pi * frequency * time_point)
+                    # Combine with trend dominance
+                    trajectory[:, i] = trend_weight * linear_component + (1 - trend_weight) * oscillation
             
     elif evolution_type == 'constant':
         # No evolution - all sequences use same parameters
