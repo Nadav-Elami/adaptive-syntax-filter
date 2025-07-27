@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "adaptive-syntax-filter"
-version = "0.1.0"
+version = "0.2.0"
 description = "A Python research package for adaptive syntax filtering"
 readme = "docs/README_scaffold.md"
 requires-python = ">=3.11"

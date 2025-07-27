@@ -5,27 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.2.0] - 2025-07-27
 
 ### Added
-- Comprehensive documentation structure
-- Development guide with contributing guidelines
-- Research guide for experimental design
-- Algorithm documentation with mathematical foundations
-- MIT license and proper project structure
-- GitHub-ready configuration files
+- Comprehensive aggregate analysis tools with statistical testing
+- Support for 20,000+ seed experiments with parallel processing
+- Cross-entropy analysis between EM, raw, and smoothed estimates
+- Statistical significance testing with p-values and effect sizes
+- Comprehensive visualization tools for evolution and convergence plots
+- Aggregate analysis configuration files for 4 experimental conditions
+- Result archiving and data management utilities
+- Batch processing capabilities for large-scale experiments
 
 ### Changed
-- Reorganized documentation into new `documentation/` folder
-- Updated project structure for GitHub publication
-- Improved test coverage and organization
-- Enhanced CLI interface and configuration management
+- **Major project reorganization**: Moved core scripts to organized directories
+  - `aggregate_analysis/` - Core aggregate analysis tools
+  - `scripts/` - Main research pipeline scripts
+  - `diagnostics/` - Archived diagnostic scripts (removed from git)
+- Improved project structure and maintainability
+- Enhanced documentation with README files for each directory
+- Updated version to 0.2.0 to reflect major reorganization
 
 ### Fixed
-- Higher-order model context encoding issues
-- Numerical stability improvements in EM algorithm
-- Probability normalization for higher-order models
-- Memory management for large state spaces
+- Deadlock issues in parallel processing
+- Memory management for large-scale experiments
+- Unicode encoding issues in logging
+- Import path organization after restructuring
+
+### Removed
+- Obsolete diagnostic scripts and temporary files
+- External machine setup files (no longer needed)
+- One-time analysis scripts and planning documents
+- Diagnostic log files (preserved main aggregate_analysis.log)
+- Redundant notebook files and workplan documents
 
 ## [0.1.0] - 2025-07-06
 
@@ -80,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **0.0.1**: Initial development version with basic functionality
 - **0.1.0**: First stable release with comprehensive features
-- **Unreleased**: Documentation and GitHub preparation
+- **0.2.0**: Major reorganization with aggregate analysis tools
 
 ## Contributing
 

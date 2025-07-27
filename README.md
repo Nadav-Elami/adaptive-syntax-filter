@@ -26,6 +26,9 @@ By unifying Bayes' rule, the Chapman–Kolmogorov equation, and a soft-max obser
 - **Higher-Order Markov Models**: Support for 1st through 5th order Markov chains
 - **Comprehensive Testing**: Full test suite with 300+ tests
 - **Research Pipeline**: Complete experimental framework with visualization
+- **Aggregate Analysis**: Large-scale statistical analysis with 20,000+ seed experiments
+- **Parallel Processing**: Multi-core support for efficient computation
+- **Statistical Testing**: Cross-entropy analysis and significance testing
 - **Jupyter Integration**: Notebooks for experimentation and analysis
 - **Modular Architecture**: Clean separation of core algorithms, data processing, and visualization
 
@@ -57,7 +60,7 @@ pip install -e ".[dev]"
 pytest
 
 # Run a quick demo
-python cli.py run --config configs/minimal.yml
+python scripts/cli.py run --config configs/minimal.yml
 ```
 
 ## 🎮 Quick Start
@@ -88,13 +91,16 @@ print(f"Converged: {results.final_params}")
 
 ```bash
 # Run with default configuration
-python cli.py run --config configs/minimal.yml
+python scripts/cli.py run --config configs/minimal.yml
 
 # Run with custom parameters
-python cli.py run --config configs/higher_order.yml
+python scripts/cli.py run --config configs/higher_order.yml
 
 # Export results
-python export_cli.py --experiment_id my_experiment
+python scripts/export_cli.py --experiment_id my_experiment
+
+# Run aggregate analysis
+python aggregate_analysis/aggregate_analysis.py --config-id 1 --n-seeds 100 --test-mode
 ```
 
 ## 📁 Project Structure
@@ -106,12 +112,26 @@ adaptive-syntax-filter/
 │   ├── data/                       # Data generation, constraints
 │   ├── viz/                        # Visualization tools
 │   └── config/                     # Configuration management
+├── aggregate_analysis/             # Aggregate analysis tools
+│   ├── aggregate_analysis.py       # Main aggregate analysis script
+│   ├── aggregate_analysis_utils.py # Statistical analysis utilities
+│   ├── aggregate_analysis_optimized.py # Optimized version
+│   ├── aggregate_analysis_clean.py # Clean version
+│   ├── generate_aggregate_analysis.py # Generation utilities
+│   ├── batch_processing.py         # Batch processing tools
+│   ├── create_comprehensive_plots.py # Plot generation
+│   └── result_archiving.py         # Result archiving utilities
+├── scripts/                        # Main research pipeline
+│   ├── research_pipeline.py        # Main research pipeline
+│   ├── cli.py                      # Command line interface
+│   ├── config_cli.py               # Configuration utilities
+│   └── export_cli.py               # Export functionality
 ├── tests/                          # Comprehensive test suite
 ├── configs/                        # Experiment configurations
 ├── notebooks/                      # Jupyter notebooks
 ├── documentation/                  # Complete documentation
 ├── results/                        # Experiment results
-└── cli.py                         # Command line interface
+└── logs/                           # Execution logs
 ```
 
 ## 🔬 Research Components
