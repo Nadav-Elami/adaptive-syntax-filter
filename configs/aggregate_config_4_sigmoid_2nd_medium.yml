@@ -1,0 +1,15 @@
+experiment_id: aggregate_config_4_sigmoid_2nd_medium
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', 'd', '>']
+  order: 2
+  n_sequences: 50
+  max_length: 200
+  evolution_type: sigmoid
+
+em:
+  max_iterations: 300
+  tolerance: 1e-4
+  regularization_lambda: 1e-3
+  damping_factor: 0.5
+  adaptive_damping: true 

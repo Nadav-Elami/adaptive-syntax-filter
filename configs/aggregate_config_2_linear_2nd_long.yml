@@ -1,0 +1,15 @@
+experiment_id: aggregate_config_2_linear_2nd_long
+
+data:
+  alphabet: ['<', 'a', 'b', 'c', '>']
+  order: 2
+  n_sequences: 50
+  max_length: 600
+  evolution_type: linear
+
+em:
+  max_iterations: 300
+  tolerance: 1e-4
+  regularization_lambda: 1e-3
+  damping_factor: 0.5
+  adaptive_damping: true 
