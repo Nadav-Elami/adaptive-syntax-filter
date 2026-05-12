@@ -66,19 +66,19 @@ The package lives under `src/adaptive_syntax_filter/` with four subpackages:
 
 - **`observation_model.py`**: Block-wise softmax (`softmax_observation_model`), its Jacobian (`log_softmax_jacobian`) and Hessian (`log_softmax_hessian`). The Hessian is used directly in the Kalman update step to linearize the non-Gaussian observation model.
 
-- **`kalman.py`**: `KalmanFilter` with `forward_filter()` (eqs. 4.1–4.6) and `rts_smoother()` (eqs. 5.1–5.4). The filter treats each song as one time step `k`; within a song, it accumulates sufficient statistics `δ_k` and `H_k` across all transitions `(y_{m-1} → y_m)` before performing the update. Constraint values (`±∞` logits) are preserved through the filter without modification.
+- **`kalman.py`**: `KalmanFilter` with `forward_filter()` (eqs. 4.1–4.6) and `rts_smoother()` (eqs. 5.1–5.4). The filter treats each song as one time step `k`; within a song, it accumulates sufficient statistics `δ_k` and `H_k` across all transitions `(y_{m-1} → y_m)` before performing the update. Positions where `np.isinf(x)` is true (forbidden `-∞` logits) are preserved through the state transition and update steps without modification.
 
 - **`em_algorithm.py`**: `EMAlgorithm` orchestrates the full EM loop. The M-step updates `F` and `u` block-by-block via ridge-regularized least squares (`λ` controls regularization). `Sigma` is updated as a diagonal matrix from squared residuals. Adaptive damping (`damping_factor ∈ [0.1, 1.0]`) is adjusted based on consecutive log-likelihood increases/decreases. The class separately tracks `best_params` (highest log-likelihood iteration) vs `final_params`.
 
 ### `data/` — Synthetic Data Generation
 
-- **`constraint_system.py`**: Enforces canary song grammar. The alphabet convention is `['<', phrase_1, ..., phrase_N, '>']` where `<` is start and `>` is end. Forbidden transitions (e.g., `> → phrase`) are represented as `-∞` logits. `encode_context` / `decode_context` map between symbol sequences and integer context indices using base-`R` encoding.
+- **`constraint_system.py`**: Enforces canary song grammar. The alphabet convention is `['<', phrase_1, ..., phrase_N, '>']` where `<` is start and `>` is end. Forbidden transitions (e.g., `> → phrase`) are set to `-np.inf`; required transitions are set to `1e8` (large-but-finite for numerical stability). `encode_context` / `decode_context` map between symbol sequences and integer context indices using base-`R` encoding.
 
 - **`temporal_evolution.py`**: Implements six evolution schedules for ground-truth logit trajectories used in synthetic data: `linear`, `exponential`, `sigmoid`, `piecewise`, `oscillatory`, `constant`. Returns a `(state_dim, n_sequences)` array of true logit vectors used for data generation.
 
 - **`sequence_generator.py`**: `SequenceGenerator` and `generate_dataset` produce synthetic sequences from a given logit trajectory. `softmax_mc_higher_order` is the reference block-wise softmax used throughout — also imported by `kalman.py` and `observation_model.py`.
 
-- **`alphabet_manager.py`**: Utilities for alphabet sizing, memory estimation, and preset configurations (bengalese finch scale: ~15 symbols, 1st order; canary scale: ~40 symbols, 1st order).
+- **`alphabet_manager.py`**: Utilities for alphabet sizing, memory estimation, and preset configurations. Presets define alphabet size only — `'bengalese_finch'` uses 16 symbols, `'canary'` uses 40 symbols; Markov order is configured separately.
 
 - **`dataset_builder.py`**: `DatasetBuilder` assembles `Dataset` objects with metadata; `create_research_datasets` builds standard benchmark datasets.
 
@@ -97,11 +97,11 @@ The package lives under `src/adaptive_syntax_filter/` with four subpackages:
 
 ### `aggregate_analysis/` — Large-Scale Statistical Analysis
 
-Scripts run from the repo root (not installed as a package). They import `src/adaptive_syntax_filter` using `sys.path` manipulation. Four canonical experiment configs (`configs/aggregate_config_*.yml`) cover: linear/sigmoid evolution × 1st/2nd order Markov. Analysis uses `h5py` + `pandas` for storing results and `seaborn` for visualization.
+Scripts run from the repo root (not installed as a package). They use `from src.adaptive_syntax_filter...` imports directly (relying on the repo root being in `sys.path`), and also import `config_cli` / `research_pipeline` as bare names (siblings in `scripts/`), so `scripts/` must also be on `sys.path` — easiest achieved by running from the repo root with `python aggregate_analysis/aggregate_analysis.py ...`. Four canonical experiment configs (`configs/aggregate_config_*.yml`) cover: linear/sigmoid evolution × 1st/2nd order Markov. Analysis uses `h5py` + `pandas` for storing results and `seaborn` for visualization.
 
 ### `scripts/` — Research Pipeline
 
-- **`cli.py`**: Main CLI entry point. Sub-commands: `run`, `evaluate`, `export`, `clean`. Dispatches to `research_pipeline.py` (must be run from `scripts/` directory since it imports `research_pipeline` without package prefix).
+- **`cli.py`**: Main CLI entry point. Sub-commands: `run`, `evaluate`, `export`, `clean`. Dispatches to `research_pipeline.py` via a bare `import research_pipeline` (sibling module, not a package import). Running `python scripts/cli.py ...` from the repo root works because Python automatically adds the script's directory (`scripts/`) to `sys.path`.
 - **`research_pipeline.py`**: `run_pipeline(config)` — top-level function called by the CLI.
 - **`config_cli.py`**: Config reading utilities used by `aggregate_analysis/`.
 
@@ -113,7 +113,7 @@ Scripts run from the repo root (not installed as a package). They import `src/ad
 
 **Observations format**: Sequences passed to `EMAlgorithm.fit()` are `List[np.ndarray]` where each array contains integer symbol indices (not strings). Use `sequences_to_observations(sequences, alphabet)` to convert string sequences.
 
-**Import paths**: Core modules use absolute-style imports like `from src.adaptive_syntax_filter.data.constraint_system import encode_context` (not relative imports). This is intentional for compatibility with scripts that add `src/` to `sys.path`.
+**Import paths**: Core modules use a mixed style. Within-subpackage imports use relative form (`from .kalman import KalmanFilter`), while cross-subpackage imports use the full `src.*` path (`from src.adaptive_syntax_filter.data.constraint_system import encode_context`). The `src.*` form works because `src/` is on `sys.path` when the package is installed in editable mode or when scripts manually set it up.
 
 **Test markers**: `slow` (auto-applied to tests with "performance" or "large" in node id), `integration`, `visual`. Use `-m "not slow"` for quick iteration.
 
